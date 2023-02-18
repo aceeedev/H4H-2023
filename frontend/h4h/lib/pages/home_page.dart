@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:h4h/pages/openstreetmap_page.dart';
+import 'package:h4h/pages/mainmap_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
