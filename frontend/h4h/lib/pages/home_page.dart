@@ -24,7 +24,15 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Home Page'),
       ),
-      body: Text('home page')
+      body: Column(
+        children: [
+          TextButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder:
+                      (context) => /*Add page here, ex: const MapPage()*/ const HomePage())),
+              child: const Text('Leo\'s map'))
+        ],
+      ),
     );
   }
 }
