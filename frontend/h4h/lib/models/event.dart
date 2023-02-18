@@ -6,7 +6,7 @@ part 'event.g.dart';
 @HiveType(typeId: 1)
 class Event {
   @HiveField(0)
-  int id;
+  int? id;
   @HiveField(1)
   DateTime time;
   @HiveField(2)
@@ -14,13 +14,19 @@ class Event {
   @HiveField(3)
   String? description;
   @HiveField(4)
-  IconData icon;
+  int iconCodePoint;
+  @HiveField(5)
+  double long;
+  @HiveField(6)
+  double lat;
 
   Event({
-    required this.id,
+    this.id,
     required this.time,
     required this.name,
     this.description,
-    required this.icon,
+    required this.iconCodePoint,
+    required this.long,
+    required this.lat,
   });
 }

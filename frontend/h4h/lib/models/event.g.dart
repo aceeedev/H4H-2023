@@ -17,18 +17,20 @@ class EventAdapter extends TypeAdapter<Event> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Event(
-      id: fields[0] as int,
+      id: fields[0] as int?,
       time: fields[1] as DateTime,
       name: fields[2] as String,
       description: fields[3] as String?,
-      icon: fields[4] as IconData,
+      iconCodePoint: fields[4] as int,
+      long: fields[5] as double,
+      lat: fields[6] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Event obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class EventAdapter extends TypeAdapter<Event> {
       ..writeByte(3)
       ..write(obj.description)
       ..writeByte(4)
-      ..write(obj.icon);
+      ..write(obj.iconCodePoint)
+      ..writeByte(5)
+      ..write(obj.long)
+      ..writeByte(6)
+      ..write(obj.lat);
   }
 
   @override
