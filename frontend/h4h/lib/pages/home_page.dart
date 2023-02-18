@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:h4h/pages/openstreetmap_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           TextButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                   builder:
-                      (context) => /*Add page here, ex: const MapPage()*/ const HomePage())),
+                      (context) => /*Add page here, ex: const MapPage()*/ const MapSample())),
               child: const Text('Leo\'s map'))
         ],
       ),
