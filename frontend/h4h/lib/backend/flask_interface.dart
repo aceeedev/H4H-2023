@@ -33,16 +33,17 @@ Future<List<Event>> findEvents(double lat, double long, String query) async {
   }
 }
 
-Future<List<Location>> autoCompleteAddress(String address) async {
+Future<List<Location>> autoCompleteAddress(
+    double lat, double long, String address) async {
   String endpoint = '/completeaddress';
-  var response =
-      await http.Client().get(Uri.parse('$apiUrl$endpoint?address=$address'));
+  var response = await http.Client()
+      .get(Uri.parse('$apiUrl$endpoint?address=$address&$lat=lat&long=$long'));
 
   if (response.statusCode == 200) {
     List<dynamic> json = jsonDecode(response.body);
     List<Location> autoCompletedAddresses = [];
 
-    for (Map<String, dynamic> location in json[0]) {
+    for (Map<String, dynamic> location in json) {
       autoCompletedAddresses.add(Location(
           address: location['location'],
           latitude: location['cords'][0],
@@ -51,6 +52,6 @@ Future<List<Location>> autoCompleteAddress(String address) async {
 
     return autoCompletedAddresses;
   } else {
-    throw Exception('Failed to load addresses');
+    throw Exception('Failed to load addresses, code ${response.statusCode}');
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:h4h/app.dart';
+import 'package:h4h/providers/event_form_provider.dart';
 import 'package:h4h/models/event.dart';
 
 void main() async {
@@ -11,5 +13,7 @@ void main() async {
   //  flutter packages pub run build_runner build
   Hive.registerAdapter(EventAdapter());
 
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => EventFormProvider())],
+      child: const MyApp()));
 }
