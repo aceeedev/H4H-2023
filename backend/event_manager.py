@@ -9,6 +9,7 @@ class EventManager:
     def __init__(self) -> None:
         self.url_nearby_search = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         self.url_details = "https://maps.googleapis.com/maps/api/place/details/json"
+        self.url_auto_complete = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
         self.key = os.environ.get("GOOGLE_TOKEN")
 
     
@@ -96,3 +97,22 @@ class EventManager:
             result.append(self.create_event(time=time, name=name, cords=coords, location=location))
 
         return result
+    
+    
+    def address_autocomplete(self, address: str) -> list:
+        payload = {'input': address, 'key': self.key, 'radius': 50000}
+        response = requests.get(url=self.url_auto_complete, params=payload)
+        predictions = response.json()["predictions"]
+        
+        # places stores the location and a key to get the lat and long
+        ids = []
+        for location in predictions:
+                ids.append([location["place_id"], location["description"]])
+        
+        locations =  self.search_locations_by_id(ids)
+        results = []
+        for i in range(len(ids)):
+            results.append({"location": ids[i][1], "cords": locations[i]["cords"]})
+            
+        return results
+
