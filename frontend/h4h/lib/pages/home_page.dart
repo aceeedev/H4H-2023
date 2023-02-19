@@ -48,13 +48,13 @@ class _HomePageState extends State<HomePage> {
               Map<String, dynamic> eventJson = json.decode(eventStringJson);
 
               await DB.instance.saveEvent(Event(
-                startTime: DateTime.parse(eventJson['startTime']),
-                endTime: DateTime.parse(eventJson['endTime']),
-                name: eventJson['name'],
-                description: eventJson['description'],
-                long: eventJson['long'],
-                lat: eventJson['lat'],
-              ));
+                  startTime: DateTime.parse(eventJson['startTime']),
+                  endTime: DateTime.parse(eventJson['endTime']),
+                  name: eventJson['name'],
+                  description: eventJson['description'],
+                  long: eventJson['long'],
+                  lat: eventJson['lat'],
+                  address: eventJson['address']));
 
               print('\n\n\n');
               print((await DB.instance.getAllEvents()).length);

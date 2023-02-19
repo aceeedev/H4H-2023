@@ -10,10 +10,12 @@ class EventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(event.name)),
-      body: QrImage(
-        data: event.toJsonString(),
-        version: QrVersions.auto,
-        size: 200.0,
+      body: Center(
+        child: QrImage(
+          data: event.toJsonString(),
+          version: QrVersions.auto,
+          size: 300.0,
+        ),
       ),
     );
   }

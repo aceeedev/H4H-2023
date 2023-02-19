@@ -24,13 +24,14 @@ class EventAdapter extends TypeAdapter<Event> {
       description: fields[4] as String?,
       long: fields[5] as double,
       lat: fields[6] as double,
+      address: fields[7] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Event obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class EventAdapter extends TypeAdapter<Event> {
       ..writeByte(5)
       ..write(obj.long)
       ..writeByte(6)
-      ..write(obj.lat);
+      ..write(obj.lat)
+      ..writeByte(7)
+      ..write(obj.address);
   }
 
   @override

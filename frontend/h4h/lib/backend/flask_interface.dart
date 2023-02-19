@@ -1,22 +1,56 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:h4h/models/event.dart';
 import 'package:http/http.dart' as http;
+import 'package:h4h/models/location.dart';
+import 'package:intl/intl.dart';
 
-String apiUrl = 'http://172.31.197.65:5000';
+String apiUrl = 'https://hands4hope.pythonanywhere.com';
 
-Future<Event> fetchEvent(double lat, double long, String query) async {
-  String endpoint = '/populate';
+Future<List<Event>> findEvents(double lat, double long, String query) async {
+  String endpoint = '/findevents';
   var response = await http.Client()
       .get(Uri.parse('$apiUrl$endpoint?lat=$lat&long=$long%query=$query'));
 
   if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    return Event.fromJson(jsonDecode(response.body));
+    List<dynamic> json = jsonDecode(response.body);
+    List<Event> foundEvents = [];
+
+    for (Map<String, dynamic> event in json) {
+      foundEvents.add(
+        Event(
+            startTime: DateFormat().parse(event['time'][0]),
+            endTime: DateFormat().parse(event['time'][1]),
+            name: event['name'],
+            long: event['cords'][1],
+            lat: event['cords'][0],
+            address: event['location']),
+      );
+    }
+
+    return foundEvents;
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load event');
+    throw Exception('Failed to load events');
+  }
+}
+
+Future<List<Location>> autoCompleteAddress(String address) async {
+  String endpoint = '/completeaddress';
+  var response =
+      await http.Client().get(Uri.parse('$apiUrl$endpoint?address=$address'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> json = jsonDecode(response.body);
+    List<Location> autoCompletedAddresses = [];
+
+    for (Map<String, dynamic> location in json[0]) {
+      autoCompletedAddresses.add(Location(
+          address: location['location'],
+          latitude: location['cords'][0],
+          longitude: location['cords'][1]));
+    }
+
+    return autoCompletedAddresses;
+  } else {
+    throw Exception('Failed to load addresses');
   }
 }
