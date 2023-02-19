@@ -11,12 +11,7 @@ class EventCard extends StatelessWidget {
         child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
-        children: [
-          Row(
-            children: [Icon(IconData(event.iconCodePoint)), Text(event.name)],
-          ),
-          Text(event.description!)
-        ],
+        children: [Text(event.name), Text(event.description!)],
       ),
     ));
   }
