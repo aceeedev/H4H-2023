@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:h4h/models/event.dart';
+import 'package:h4h/pages/event_page.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({super.key, required this.event});
@@ -7,17 +8,21 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          Row(
-            children: [Icon(IconData(event.iconCodePoint)), Text(event.name)],
-          ),
-          Text(event.description!)
-        ],
-      ),
-    ));
+    return GestureDetector(
+      child: Card(
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [Icon(IconData(event.iconCodePoint)), Text(event.name)],
+            ),
+            Text(event.description!)
+          ],
+        ),
+      )),
+      onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => EventPage(event: event))),
+    );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:h4h/backend/database.dart';
 import 'package:h4h/models/event.dart';
-import 'package:h4h/secrets.dart' as secrets;
 
 class EventFormPage extends StatefulWidget {
   const EventFormPage({super.key});

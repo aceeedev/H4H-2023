@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'map_page.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:h4h/pages/events_page.dart';
+import 'package:h4h/backend/database.dart';
+import 'package:h4h/models/event.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,6 +40,28 @@ class _HomePageState extends State<HomePage> {
               onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const EventsPage())),
               child: const Text('Events page')),
+          TextButton(
+            onPressed: () async {
+              String eventStringJson = await FlutterBarcodeScanner.scanBarcode(
+                  "#ff6666", "Cancel", true, ScanMode.QR);
+
+              Map<String, dynamic> eventJson = json.decode(eventStringJson);
+
+              await DB.instance.saveEvent(Event(
+                startTime: DateTime.parse(eventJson['startTime']),
+                endTime: DateTime.parse(eventJson['endTime']),
+                name: eventJson['name'],
+                description: eventJson['description'],
+                iconCodePoint: eventJson['iconCodePoint'],
+                long: eventJson['long'],
+                lat: eventJson['lat'],
+              ));
+
+              print('\n\n\n');
+              print((await DB.instance.getAllEvents()).length);
+            },
+            child: Text('Scan QR Code'),
+          ),
         ],
       ),
     );
