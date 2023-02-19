@@ -23,7 +23,7 @@ class EventManager:
         })
     
     
-    def find_ids(self, lat, long, keyword) -> list[str]:
+    def find_ids(self, lat: str, long: str, keyword: str) -> list[str]:
         '''finds the top 3 user query results based on user reviews'''
         payload = {
             "key": self.key,
@@ -90,4 +90,3 @@ class EventManager:
             result.append(self.create_event(time=time, name=name, cords=coords, location=location))
 
         return result
-
