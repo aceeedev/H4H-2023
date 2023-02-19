@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           TextButton(
               onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const MapSample())),
+                  MaterialPageRoute(builder: (context) => const MapPage())),
               child: const Text('Leo\'s map')),
           TextButton(
               onPressed: () => Navigator.of(context).push(
