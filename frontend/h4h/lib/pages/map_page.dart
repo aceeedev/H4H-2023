@@ -122,7 +122,7 @@ class MapPageState extends State<MapPage> {
               events.add(const Marker(
                   markerId: MarkerId("1"),
                   position: LatLng(37.783333, -122.416667)));
-              // icon: BitmapDescriptor.fromAssetImage(configuration, assetName)
+              // icon: BitmapDescriptor.fromAssetImage(const ImageConfiguration(devicePixelRatio: 3.2), 'frontend/h4h/assets/icons/frame_person_FILL0_wght400_GRAD0_opsz48.png')
             }
           }
           return const Center(child: CircularProgressIndicator());
