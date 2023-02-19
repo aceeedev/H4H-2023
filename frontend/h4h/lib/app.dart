@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:h4h/pages/home_page.dart';
 import 'package:h4h/pages/map_page.dart';
 
 class MyApp extends StatelessWidget {
