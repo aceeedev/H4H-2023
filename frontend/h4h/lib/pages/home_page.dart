@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'mainmap_page.dart';
+import 'map_page.dart';
 import 'package:h4h/pages/events_page.dart';
 
 class HomePage extends StatefulWidget {
