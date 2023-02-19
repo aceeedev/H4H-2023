@@ -22,7 +22,7 @@ class EventCard extends StatelessWidget {
               style:
                   const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            Text(event.description!),
+            Text(event.description ?? ""),
             event.startTime != null
                 ? Row(
                     children: [

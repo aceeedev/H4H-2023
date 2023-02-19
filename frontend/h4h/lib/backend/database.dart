@@ -15,8 +15,10 @@ class DB {
   }
 
   Future<bool> checkIfDoesntExists(Event event) async {
-    List<Event> allEvents = await getAllEvents();
-    return !allEvents.contains(event);
+    List<String> allEvents =
+        (await getAllEvents()).map((e) => e.address).toList();
+
+    return !allEvents.contains(event.address);
   }
 
   Future<void> saveEvent(Event event) async {
