@@ -1,7 +1,14 @@
 from flask import Flask, jsonify, request
-import qrcode
+from event import EventManager
+import requests
+import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
+key = os.environ.get("GOOGLE_TOKEN")
+print(key)
+google_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+
 
 all_books = []
 # [homeless-shelter, soup-kitchen, food-drive, homeless-service, homeless-hospital]
@@ -14,10 +21,18 @@ def home():
 def populate():
     lat = request.args.get('lat', default = 0, type = float)
     long =  request.args.get('long', default = 0, type = float)
-
-
-
-
+    keyword = request.args.get("query", default="", type=str)
+    payload = {
+        "key": key,
+        "keyword": keyword,
+        "radius": 1500,
+        "location": f"{lat},{long}",
+        
+    }
+    response = requests.get(url=google_endpoint, params=payload)
+    print(response.status_code)
+    print(response.json())
+    return response.json()
 
 
 
