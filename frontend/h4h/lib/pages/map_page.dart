@@ -4,6 +4,7 @@ import 'package:h4h/backend/database.dart';
 import 'dart:async';
 import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
+import 'events_page.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -20,6 +21,8 @@ class MapPageState extends State<MapPage> {
   late List<Event> event_data;
 
   String mapStyle = '';
+
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -38,6 +41,20 @@ class MapPageState extends State<MapPage> {
     target: LatLng(37.783333, -122.416667),
     zoom: 14.4746,
   );
+
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (index == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const EventsPage(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +103,8 @@ class MapPageState extends State<MapPage> {
         backgroundColor: Colors.amber,
         selectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
-        currentIndex: 2,
+        currentIndex: _selectedIndex,
+        onTap: _onNavBarTap,
         // onTap: Null
       ),
       //   floatingActionButton: FloatingActionButton.extended(
