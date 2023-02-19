@@ -2,12 +2,16 @@ from flask import Flask, jsonify, request
 from event import EventManager
 import requests
 import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
 key = os.environ.get("GOOGLE_TOKEN")
 print(key)
-google_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
+app = Flask(__name__)
+
+
+google_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
 all_books = []
 # [homeless-shelter, soup-kitchen, food-drive, homeless-service, homeless-hospital]
@@ -29,12 +33,14 @@ def populate():
         
     }
     response = requests.get(url=google_endpoint, params=payload)
-    print(response.status_code)
-    print(response.json())
+    # print(response.status_code)
+    # print(response.json())
+
+    print(response.json()["results"][0]["name"])
+
+    
+
     return response.json()
-
-
-
 
 
 
