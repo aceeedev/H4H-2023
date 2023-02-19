@@ -30,12 +30,10 @@ class DB {
   Future<void> saveAllEvents(List<Event> events) async {
     for (Event event in events) {
       if (await checkIfDoesntExists(event)) {
-        (await box).addAll(events);
+        (await box).add(event);
       }
     }
   }
-
-  Future<Event> getEvent(int id) async => (await box).getAt(id);
 
   Future<List<Event>> getAllEvents() async =>
       (await box).values.cast<Event>().toList();
