@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:h4h/models/event.dart';
 import 'package:h4h/pages/event_page.dart';
 
@@ -13,7 +14,25 @@ class EventCard extends StatelessWidget {
           child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          children: [Text(event.name), Text(event.description!)],
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              event.name,
+              style:
+                  const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            Text(event.description!),
+            Row(
+              children: [
+                Text(
+                    "${DateFormat.yMd().add_jm().format(event.startTime)} - ${DateFormat.yMd().add_jm().format(event.endTime)}"),
+              ],
+            ),
+            Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Text(event.address)),
+          ],
         ),
       )),
       onTap: () => Navigator.of(context).push(

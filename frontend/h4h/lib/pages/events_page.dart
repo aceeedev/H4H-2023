@@ -76,18 +76,20 @@ class _EventsPageState extends State<EventsPage> {
 
                   return ListView.builder(
                       itemCount: events.length,
-                      itemBuilder: ((context, index) =>
-                          EventCard(event: events[index])));
+                      itemBuilder: ((context, index) => Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: EventCard(event: events[index]))));
                 }
               }
               return const Center(child: CircularProgressIndicator());
             }),
         floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const EventFormPage()),
-          ),
-        ),
+            child: const Icon(Icons.add),
+            onPressed: () async {
+              await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const EventFormPage()));
+              setState(() {});
+            }),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

@@ -60,9 +60,6 @@ class _EventFormState extends State<EventForm> {
             }
             return null;
           }),
-      'Description (Optional)': TextFormField(
-        controller: descriptionTextController,
-      ),
       'Start Time': DateAndTimePickerField(
         dateController: startDateTextController,
         timeController: startTimeTextController,
@@ -83,61 +80,30 @@ class _EventFormState extends State<EventForm> {
         dateController: endDateTextController,
         timeController: endTimeTextController,
       ),
-      'Location': TextButton(
+      'Location': Center(
+          child: TextButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => const LocationPickerPage())),
+        style: TextButton.styleFrom(
+          side: const BorderSide(color: Colors.black, width: 0.5),
+        ),
         child: const Text('Select Location'),
-      )
+      )),
+      'Description (Optional)': TextFormField(
+        controller: descriptionTextController,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+        ),
+      ),
     };
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
         key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ...createFormEntries(entries),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: ElevatedButton(
-                onPressed: () async {
-                  // Validate returns true if the form is valid, or false otherwise.
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Processing Data')),
-                    );
-
-                    DateTime startTime =
-                        DateFormat.yMd().parse(startDateTextController.text);
-
-                    DateTime endTime;
-                    if (endDateTextController.text != "" &&
-                        startTimeTextController.text != "") {
-                      endTime =
-                          DateFormat.yMd().parse(endDateTextController.text);
-                    } else {
-                      const defaultDuration = Duration(hours: 1);
-
-                      startTime.add(defaultDuration);
-                      endTime = startTime;
-                      startTime.subtract(defaultDuration);
-                    }
-
-                    DB.instance.saveEvent(Event(
-                      startTime: startTime,
-                      endTime: endTime,
-                      name: nameTextController.text,
-                      description: descriptionTextController.text,
-                      long: 0,
-                      lat: 0,
-                    ));
-                  }
-                },
-                child: const Text('Create Event'),
-              ),
-            ),
-          ],
+        child: ListView.builder(
+          itemCount: createFormEntries(entries).length,
+          itemBuilder: (context, index) => createFormEntries(entries)[index],
         ),
       ),
     );
@@ -148,6 +114,48 @@ class _EventFormState extends State<EventForm> {
 
     entries.forEach((key, value) =>
         formEntries.add(FormEntry(title: key, formWidget: value)));
+
+    formEntries.add(Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          // Validate returns true if the form is valid, or false otherwise.
+          if (_formKey.currentState!.validate()) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Processing Data')),
+            );
+
+            DateTime startTime =
+                DateFormat.yMd().parse(startDateTextController.text);
+
+            DateTime endTime;
+            if (endDateTextController.text != "" &&
+                startTimeTextController.text != "") {
+              endTime = DateFormat.yMd().parse(endDateTextController.text);
+            } else {
+              const defaultDuration = Duration(hours: 1);
+
+              startTime.add(defaultDuration);
+              endTime = startTime;
+              startTime.subtract(defaultDuration);
+            }
+
+            await DB.instance.saveEvent(Event(
+              startTime: startTime,
+              endTime: endTime,
+              name: nameTextController.text,
+              description: descriptionTextController.text,
+              long: 0,
+              lat: 0,
+              address: 'Address, CA',
+            ));
+
+            Navigator.of(context).pop();
+          }
+        },
+        child: const Text('Create Event'),
+      ),
+    ));
 
     return formEntries;
   }
@@ -231,10 +239,15 @@ class FormEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+        ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
+          padding: const EdgeInsets.only(top: 6.0, bottom: 16.0),
           child: formWidget,
         )
       ],
@@ -275,7 +288,6 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
             children: [
               Form(
                 child: TextFormField(
-                  //controller: addressTextController,
                   onChanged: (String text) async {},
                 ),
               ),
