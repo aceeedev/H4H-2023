@@ -102,8 +102,8 @@ class EventManager:
     def address_autocomplete(self, lat: str, long: str, address: str) -> list:
         payload = {'input': address, 
                    'key': self.key, 
-                   'radius': 50000, 
-                   "location": "37.3496,-121.9390", 
+                   'radius': 10000, 
+                   "location": f"{lat},{long}", 
                    "components": "country:us"
                 }
         

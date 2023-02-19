@@ -7,7 +7,8 @@ driver = EventManager()
 
 @app.route('/')
 def home():
-    return "<h1>go to /findevents to find a qrcode for an event</h1>"
+    return "<h1>go to /findevents to find a qrcode for an event</h1>"\
+            "<h1>go to /completeaddress to get an autocomplete feature</h1>"
 
 
 @app.route('/findevents')
