@@ -140,7 +140,7 @@ class _EventFormState extends State<EventForm> {
               startTime.subtract(defaultDuration);
             }
 
-            DB.instance.saveEvent(Event(
+            await DB.instance.saveEvent(Event(
               startTime: startTime,
               endTime: endTime,
               name: nameTextController.text,
@@ -149,6 +149,8 @@ class _EventFormState extends State<EventForm> {
               lat: 0,
               address: 'Address, CA',
             ));
+
+            Navigator.of(context).pop();
           }
         },
         child: const Text('Create Event'),
