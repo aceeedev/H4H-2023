@@ -52,7 +52,6 @@ class _HomePageState extends State<HomePage> {
                 endTime: DateTime.parse(eventJson['endTime']),
                 name: eventJson['name'],
                 description: eventJson['description'],
-                iconCodePoint: eventJson['iconCodePoint'],
                 long: eventJson['long'],
                 lat: eventJson['lat'],
               ));
