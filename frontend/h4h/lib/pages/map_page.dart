@@ -92,12 +92,18 @@ class MapPageState extends State<MapPage> {
     }
   }
 
+  Future<List> getEvents() async {
+    DB.instance.getAllEvents();
+    final response = await http.get(url);
+    return response.body;
+}
+
   @override
   Widget build(BuildContext context) {
     // call our api to get a list of events
     // and then add them to events
     FutureBuilder(
-        future: DB.instance.getAllEvents(),
+        future: getEvents(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasError) {
