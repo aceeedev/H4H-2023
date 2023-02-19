@@ -22,13 +22,26 @@ class Event {
   double lat;
 
   Event({
-    this.id,
+    this.id, // idk
     required this.startTime,
     required this.endTime,
     required this.name,
     this.description,
-    required this.iconCodePoint,
+    required this.iconCodePoint, // idk
     required this.long,
     required this.lat,
   });
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id'],
+      /*startTime,
+      endTime, */
+      name: json['name'],
+      description: json['description'],
+      //iconCodePoint: json[], // idk
+      long: json['coords'][1],
+      lat: json['coords'][0],
+    );
+  }
 }
