@@ -49,11 +49,11 @@ class MapPageState extends State<MapPage> {
       _selectedIndex = index;
     });
     if (index == 0) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const MapPage(),
-        ),
-      );
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) => const MapPage(),
+      //   ),
+      // );
     }
     if (index == 1) {
       Navigator.of(context).push(
@@ -118,7 +118,6 @@ class MapPageState extends State<MapPage> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onNavBarTap,
-        // onTap: Null
       ),
       //   floatingActionButton: FloatingActionButton.extended(
       //     onPressed: _goToTheLake,
