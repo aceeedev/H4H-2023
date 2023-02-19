@@ -94,9 +94,8 @@ class MapPageState extends State<MapPage> {
 
   Future<List> getEvents() async {
     DB.instance.getAllEvents();
-    final response = await http.get(url);
     return response.body;
-}
+  }
 
   @override
   Widget build(BuildContext context) {
