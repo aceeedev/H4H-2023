@@ -14,7 +14,24 @@ class DB {
     return _box!;
   }
 
-  Future<void> saveEvent(Event event) async => (await box).add(event);
+  Future<bool> checkIfDoesntExists(Event event) async {
+    List<Event> allEvents = await getAllEvents();
+    return !allEvents.contains(event);
+  }
+
+  Future<void> saveEvent(Event event) async {
+    if (await checkIfDoesntExists(event)) {
+      (await box).add(event);
+    }
+  }
+
+  Future<void> saveAllEvents(List<Event> events) async {
+    for (Event event in events) {
+      if (await checkIfDoesntExists(event)) {
+        (await box).addAll(events);
+      }
+    }
+  }
 
   Future<Event> getEvent(int id) async => (await box).getAt(id);
 

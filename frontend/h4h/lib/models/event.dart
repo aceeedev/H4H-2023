@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'dart:convert';
 
@@ -8,9 +9,9 @@ class Event {
   @HiveField(0)
   int? id;
   @HiveField(1)
-  DateTime startTime;
+  DateTime? startTime;
   @HiveField(2)
-  DateTime endTime;
+  DateTime? endTime;
   @HiveField(3)
   String name;
   @HiveField(4)

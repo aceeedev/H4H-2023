@@ -23,12 +23,14 @@ class EventCard extends StatelessWidget {
                   const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Text(event.description!),
-            Row(
-              children: [
-                Text(
-                    "${DateFormat.yMd().add_jm().format(event.startTime)} - ${DateFormat.yMd().add_jm().format(event.endTime)}"),
-              ],
-            ),
+            event.startTime != null
+                ? Row(
+                    children: [
+                      Text(
+                          "${DateFormat.yMd().add_jm().format(event.startTime as DateTime)} - ${DateFormat.yMd().add_jm().format(event.endTime as DateTime)}"),
+                    ],
+                  )
+                : const SizedBox.shrink(),
             Padding(
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(event.address)),

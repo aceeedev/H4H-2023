@@ -73,9 +73,6 @@ class _EventsPageState extends State<EventsPage> {
                   events = snapshot.data!;
                   if (events.isEmpty) return const Text('No events');
 
-                  // sort events by ascending starting time
-                  events.sort((a, b) => a.startTime.compareTo(b.startTime));
-
                   return ListView.builder(
                       itemCount: events.length,
                       itemBuilder: ((context, index) => Padding(

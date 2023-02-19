@@ -18,8 +18,8 @@ class EventAdapter extends TypeAdapter<Event> {
     };
     return Event(
       id: fields[0] as int?,
-      startTime: fields[1] as DateTime,
-      endTime: fields[2] as DateTime,
+      startTime: fields[1] as DateTime?,
+      endTime: fields[2] as DateTime?,
       name: fields[3] as String,
       description: fields[4] as String?,
       long: fields[5] as double,

@@ -95,21 +95,25 @@ class MapPageState extends State<MapPage> {
   /// Returns a [Map<String, dynamic>] of the following:
   ///   allEvents: List<Event>
   ///   foodEvents: List<Event>
-  ///   jobEvents: List<Event>
+  ///   shelterEvents: List<Event>
   ///   genericMarker: BitmapDescriptor
+  ///   foodMarker: BitmapDescriptor
+  ///   shelterMarker: BitmapDescriptor
   Future<Map<String, dynamic>> getFutures() async {
-    Map<String, dynamic> futures = {};
     double lat = coords.berkLat;
     double long = coords.berkLong;
 
-    futures['allEvents'] = await DB.instance.getAllEvents();
-    futures['foodEvents'] = await findEvents(lat, long, 'soup kitchens');
-    futures['jobEvents'] = await findEvents(lat, long, 'help needed jobs');
-    futures['genericMarker'] = await iconDataToBitmap(Icons.person);
-    futures['foodMarker'] = await iconDataToBitmap(Icons.food_bank_rounded);
-    futures['jobMarker'] = await iconDataToBitmap(Icons.work_rounded);
+    List<Event> foodEvents =
+        await findEvents(lat, long, 'homeless soup kitchen');
+    List<Event> shelterEvents = await findEvents(lat, long, 'homeless shelter');
+    BitmapDescriptor genericMarker = await iconDataToBitmap(Icons.person);
 
-    return futures;
+    await DB.instance.saveAllEvents([...foodEvents, ...shelterEvents]);
+
+    return {
+      'allEvents': await DB.instance.getAllEvents(),
+      'genericMarker': genericMarker
+    };
   }
 
   Future<BitmapDescriptor> iconDataToBitmap(IconData iconData) async {
@@ -154,32 +158,15 @@ class MapPageState extends State<MapPage> {
               if (futureData.isEmpty) return const Text('No events');
 
               List<Event> allEvents = futureData['allEvents'];
-              List<Event> foodEvents = futureData['foodEvents'];
-              List<Event> jobEvents = futureData['jobEvents'];
               BitmapDescriptor genericMarker = futureData['genericMarker'];
-              BitmapDescriptor foodMarker = futureData['foodMarker'];
-              BitmapDescriptor jobMarker = futureData['jobMarker'];
 
-              List<List<dynamic>> allEventTypes = [
-                [allEvents, genericMarker],
-                [foodEvents, foodMarker],
-                [jobEvents, jobMarker]
-              ];
-
-              for (List<dynamic> eventType in allEventTypes) {
-                for (int index = 0; index < eventType[0].length; index++) {
-                  events.add(Marker(
-                      markerId: MarkerId(index.toString()),
-                      position: LatLng(
-                          eventType[0][index].lat, eventType[0][index].long),
-                      icon: eventType[1]));
-                }
+              for (int index = 0; index < allEvents.length; index++) {
+                events.add(Marker(
+                    markerId: MarkerId(index.toString()),
+                    position:
+                        LatLng(allEvents[index].lat, allEvents[index].long),
+                    icon: genericMarker));
               }
-
-              events.add(const Marker(
-                  markerId: MarkerId("1"),
-                  position: LatLng(37.783333, -122.416667)));
-              // icon: BitmapDescriptor.fromAssetImage(configuration, assetName)
 
               // build the map after getting data from events
               return Scaffold(
