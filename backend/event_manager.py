@@ -12,7 +12,7 @@ class EventManager:
         self.key = os.environ.get("GOOGLE_TOKEN")
 
     
-    def create_event(self, time: str, name: str, cords: list[float], location: str, description=None) -> dict:
+    def create_event(self, time: list[str], name: str, cords: list[float], location: str, description=None) -> dict:
         '''returns the desired dictionary object to be converted into a json object'''
         return ({
             "time": time,
@@ -73,10 +73,16 @@ class EventManager:
             data = response.json()["result"]
 
             if "current_opening_hours" in data:
-                time = data["current_opening_hours"]["weekday_text"][0]
+                start = data["current_opening_hours"]["periods"][0]["open"]["time"]
+                end = data["current_opening_hours"]["periods"][0]["close"]["time"]
+
+                start = start[:2] + ":" + start[2:]
+                end = end[:2] + ":" + end[2:]
+
+                time = [start, end]
 
             else:
-                time = "unknown"
+                time = None
 
             name = data["name"]
 
