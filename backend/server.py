@@ -2,8 +2,9 @@ from flask import Flask, jsonify, request
 from event import EventManager
 import requests
 import os
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+load_dotenv()
 key = os.environ.get("GOOGLE_TOKEN")
 print(key)
 google_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
@@ -32,9 +33,6 @@ def populate():
     print(response.status_code)
     print(response.json())
     return response.json()
-
-
-
 
 
 
