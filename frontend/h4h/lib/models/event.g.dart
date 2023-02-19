@@ -18,32 +18,35 @@ class EventAdapter extends TypeAdapter<Event> {
     };
     return Event(
       id: fields[0] as int?,
-      time: fields[1] as DateTime,
-      name: fields[2] as String,
-      description: fields[3] as String?,
-      iconCodePoint: fields[4] as int,
-      long: fields[5] as double,
-      lat: fields[6] as double,
+      startTime: fields[1] as DateTime,
+      endTime: fields[2] as DateTime,
+      name: fields[3] as String,
+      description: fields[4] as String?,
+      iconCodePoint: fields[5] as int,
+      long: fields[6] as double,
+      lat: fields[7] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Event obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.time)
+      ..write(obj.startTime)
       ..writeByte(2)
-      ..write(obj.name)
+      ..write(obj.endTime)
       ..writeByte(3)
-      ..write(obj.description)
+      ..write(obj.name)
       ..writeByte(4)
-      ..write(obj.iconCodePoint)
+      ..write(obj.description)
       ..writeByte(5)
-      ..write(obj.long)
+      ..write(obj.iconCodePoint)
       ..writeByte(6)
+      ..write(obj.long)
+      ..writeByte(7)
       ..write(obj.lat);
   }
 
