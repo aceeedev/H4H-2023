@@ -94,7 +94,6 @@ class MapPageState extends State<MapPage> {
 
   Future<List> getEvents() async {
     DB.instance.getAllEvents();
-    return response.body;
   }
 
   @override
