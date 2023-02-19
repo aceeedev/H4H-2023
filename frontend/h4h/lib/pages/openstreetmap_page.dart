@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:flutter_map/';
 import 'package:h4h/backend/database.dart';
@@ -93,3 +94,4 @@ class MapSampleState extends State<MapSample> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_university));
   }
 }
+*/
