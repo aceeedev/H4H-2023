@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:h4h/backend/database.dart';
 import 'package:h4h/models/event.dart';
-import 'package:h4h/secrets.dart' as secrets;
 
 class EventFormPage extends StatefulWidget {
   const EventFormPage({super.key});
@@ -43,19 +42,12 @@ class _EventFormState extends State<EventForm> {
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
 
-  static const Map<String, IconData> dropdownList = {
-    'Food': Icons.food_bank_rounded,
-    'Shelter': Icons.night_shelter_rounded,
-    'Services': Icons.home_repair_service_rounded
-  };
-
   final nameTextController = TextEditingController();
   final descriptionTextController = TextEditingController();
   final startDateTextController = TextEditingController();
   final startTimeTextController = TextEditingController();
   final endDateTextController = TextEditingController();
   final endTimeTextController = TextEditingController();
-  String selectedDropDownValue = dropdownList.keys.first;
 
   @override
   Widget build(BuildContext context) {
@@ -90,22 +82,6 @@ class _EventFormState extends State<EventForm> {
       'EndTime (Optional)': DateAndTimePickerField(
         dateController: endDateTextController,
         timeController: endTimeTextController,
-      ),
-      'Type': DropdownButton<String>(
-        value: selectedDropDownValue,
-        icon: const Icon(Icons.arrow_downward),
-        elevation: 16,
-        onChanged: (String? value) {
-          setState(() {
-            selectedDropDownValue = value!;
-          });
-        },
-        items: dropdownList.keys.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
       ),
       'Location': TextButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
@@ -153,8 +129,6 @@ class _EventFormState extends State<EventForm> {
                       endTime: endTime,
                       name: nameTextController.text,
                       description: descriptionTextController.text,
-                      iconCodePoint:
-                          dropdownList[selectedDropDownValue]!.codePoint,
                       long: 0,
                       lat: 0,
                     ));

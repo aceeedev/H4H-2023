@@ -4,15 +4,16 @@ import 'package:h4h/backend/database.dart';
 import 'dart:async';
 import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
+import 'events_page.dart';
 
-class MapSample extends StatefulWidget {
-  const MapSample({Key? key}) : super(key: key);
+class MapPage extends StatefulWidget {
+  const MapPage({Key? key}) : super(key: key);
 
   @override
-  State<MapSample> createState() => MapSampleState();
+  State<MapPage> createState() => MapPageState();
 }
 
-class MapSampleState extends State<MapSample> {
+class MapPageState extends State<MapPage> {
   // a list of events to plot
   Set<Marker> events = {};
 
@@ -21,14 +22,14 @@ class MapSampleState extends State<MapSample> {
 
   String mapStyle = '';
 
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    rootBundle
-        .loadString('assets/map_styles2.txt')
-        .then((string) {
+    rootBundle.loadString('assets/map_styles2.txt').then((string) {
       mapStyle = string;
     });
   }
@@ -37,14 +38,23 @@ class MapSampleState extends State<MapSample> {
       Completer<GoogleMapController>();
 
   static const CameraPosition _initial = CameraPosition(
-    target: LatLng(37.3496418, -121.9447969),
+    target: LatLng(37.783333, -122.416667),
     zoom: 14.4746,
   );
 
-  static const CameraPosition _university = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.3496418, -121.9447969),
-      zoom: 14.4746);
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (index == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const EventsPage(),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +71,9 @@ class MapSampleState extends State<MapSample> {
               event_data = snapshot.data!;
               if (event_data.isEmpty) return const Text('No events');
 
-              
-
               events.add(const Marker(
                   markerId: MarkerId("1"),
-                  position: LatLng(37.3542894, -121.9359333)));
+                  position: LatLng(37.783333, -122.416667)));
             }
           }
           return const Center(child: CircularProgressIndicator());
@@ -82,17 +90,30 @@ class MapSampleState extends State<MapSample> {
         },
         markers: events,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: const Icon(Icons.add_location_alt), // const Text('To the lake!'),
-        // icon: const Icon(Icons.directions_boat),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Events'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.addchart), label: 'Contribute'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.offline_share), label: 'Share'),
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Fetch')
+        ],
+        backgroundColor: Colors.amber,
+        selectedItemColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        onTap: _onNavBarTap,
+        // onTap: Null
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
+      //   floatingActionButton: FloatingActionButton.extended(
+      //     onPressed: _goToTheLake,
+      //     label:
+      //         const Icon(Icons.add_location_alt), // const Text('To the lake!'),
+      //     // icon: const Icon(Icons.directions_boat),
+      //   ),
+      //   floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
     );
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_university));
   }
 }

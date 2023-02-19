@@ -15,20 +15,29 @@ class Event {
   @HiveField(4)
   String? description;
   @HiveField(5)
-  int iconCodePoint;
-  @HiveField(6)
   double long;
-  @HiveField(7)
+  @HiveField(6)
   double lat;
 
   Event({
-    this.id,
+    this.id, // idk
     required this.startTime,
     required this.endTime,
     required this.name,
     this.description,
-    required this.iconCodePoint,
     required this.long,
     required this.lat,
   });
+
+  factory Event.fromJson(Map<String, dynamic> json) {
+    return Event(
+      id: json['id'],
+      startTime: json['time'][0],
+      endTime: json['time'][1],
+      name: json['name'],
+      description: json['description'],
+      long: json['coords'][1],
+      lat: json['coords'][0],
+    );
+  }
 }
