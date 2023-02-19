@@ -5,6 +5,7 @@ class EventManager:
             "name": name,
             "cords": cords,
             "location": location,
+            "coords": cords,
             "description": description
         })
     
