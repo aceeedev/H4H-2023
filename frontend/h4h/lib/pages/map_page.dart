@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'dart:convert';
 import 'package:h4h/backend/database.dart';
 import 'dart:async';
 import 'package:h4h/models/event.dart';
@@ -43,8 +45,7 @@ class MapPageState extends State<MapPage> {
     zoom: 14.4746,
   );
 
-
-  void _onNavBarTap(int index) {
+  void _onNavBarTap(int index) async {
     setState(() {
       _selectedIndex = index;
     });
@@ -68,6 +69,25 @@ class MapPageState extends State<MapPage> {
           builder: (context) => const EventFormPage(),
         ),
       );
+    }
+    if (index == 3) {
+      String eventStringJson = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+
+      Map<String, dynamic> eventJson = json.decode(eventStringJson);
+
+      await DB.instance.saveEvent(Event(
+        startTime: DateTime.parse(eventJson['startTime']),
+        endTime: DateTime.parse(eventJson['endTime']),
+        name: eventJson['name'],
+        description: eventJson['description'],
+        long: eventJson['long'],
+        lat: eventJson['lat'],
+        address: eventJson['address'],
+      ));
+
+      print('\n\n\n');
+      print((await DB.instance.getAllEvents()).length);
     }
   }
 
@@ -111,7 +131,7 @@ class MapPageState extends State<MapPage> {
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Events'),
           BottomNavigationBarItem(
               icon: Icon(Icons.addchart), label: 'Contribute'),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Fetch')
+          BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Scan')
         ],
         backgroundColor: Colors.amber,
         selectedItemColor: Colors.white,

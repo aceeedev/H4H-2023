@@ -19,6 +19,8 @@ class Event {
   double long;
   @HiveField(6)
   double lat;
+  @HiveField(7)
+  String address;
 
   Event({
     this.id, // idk
@@ -28,6 +30,7 @@ class Event {
     this.description,
     required this.long,
     required this.lat,
+    required this.address,
   });
 
   String toJsonString() => json.encode({
@@ -37,6 +40,7 @@ class Event {
         'description': description,
         'long': long,
         'lat': lat,
+        'address': address,
       });
 
   factory Event.fromJson(Map<String, dynamic> json) {
@@ -48,6 +52,7 @@ class Event {
       description: json['description'],
       long: json['coords'][1],
       lat: json['coords'][0],
+      address: json['location'],
     );
   }
 }

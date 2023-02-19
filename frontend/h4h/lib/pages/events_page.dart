@@ -27,36 +27,40 @@ class _EventsPageState extends State<EventsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Events Page'),
-        ),
-        body: FutureBuilder(
-            future: DB.instance.getAllEvents(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Center(
-                      child: Text('An error has occurred, ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  events = snapshot.data!;
-                  if (events.isEmpty) return const Text('No events');
+      appBar: AppBar(
+        title: const Text('Events Page'),
+      ),
+      body: FutureBuilder(
+          future: DB.instance.getAllEvents(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                return Center(
+                    child: Text('An error has occurred, ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                events = snapshot.data!;
+                if (events.isEmpty) return const Text('No events');
 
-                  // sort events by ascending starting time
-                  events.sort((a, b) => a.startTime.compareTo(b.startTime));
+                // sort events by ascending starting time
+                events.sort((a, b) => a.startTime.compareTo(b.startTime));
 
-                  return ListView.builder(
-                      itemCount: events.length,
-                      itemBuilder: ((context, index) =>
-                          EventCard(event: events[index])));
-                }
+                return ListView.builder(
+                    itemCount: events.length,
+                    itemBuilder: ((context, index) => Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: EventCard(event: events[index]))));
               }
-              return const Center(child: CircularProgressIndicator());
-            }),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const EventFormPage()),
-          ),
-        ));
+            }
+            return const Center(child: CircularProgressIndicator());
+          }),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () async {
+          await Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const EventFormPage()));
+          setState(() {});
+        },
+      ),
+    );
   }
 }
