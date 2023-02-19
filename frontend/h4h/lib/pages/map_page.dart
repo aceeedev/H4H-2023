@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:h4h/providers/event_form_provider.dart';
 import 'package:h4h/backend/database.dart';
 import 'dart:async';
 import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
 import 'events_page.dart';
 import 'event_form_page.dart';
-import 'package:image/image.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -65,6 +66,8 @@ class MapPageState extends State<MapPage> {
       );
     }
     if (index == 2) {
+      context.read<EventFormProvider>().reset();
+
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const EventFormPage(),

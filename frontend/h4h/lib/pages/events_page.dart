@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:h4h/backend/database.dart';
 import 'package:h4h/pages/event_form_page.dart';
 import 'package:h4h/widgets/event_card.dart';
 import 'package:h4h/models/event.dart';
+import 'package:h4h/providers/event_form_provider.dart';
 import 'map_page.dart';
 
 class EventsPage extends StatefulWidget {
@@ -58,8 +60,8 @@ class _EventsPageState extends State<EventsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // title: const Text('Events Page'),
-        ),
+            // title: const Text('Events Page'),
+            ),
         body: FutureBuilder(
             future: DB.instance.getAllEvents(),
             builder: (context, snapshot) {
@@ -86,6 +88,8 @@ class _EventsPageState extends State<EventsPage> {
         floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
+              context.read<EventFormProvider>().reset();
+
               await Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => const EventFormPage()));
               setState(() {});

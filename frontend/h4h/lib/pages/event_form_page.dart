@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:h4h/backend/database.dart';
+import 'package:h4h/backend/flask_interface.dart';
+import 'package:h4h/providers/event_form_provider.dart';
+import 'package:h4h/models/location.dart';
 import 'package:h4h/models/event.dart';
 
 class EventFormPage extends StatefulWidget {
@@ -25,7 +29,7 @@ class _EventFormPageState extends State<EventFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Event Form Page'),
+          title: const Text('Event Details'),
         ),
         body: const EventForm());
   }
@@ -87,7 +91,8 @@ class _EventFormState extends State<EventForm> {
         style: TextButton.styleFrom(
           side: const BorderSide(color: Colors.black, width: 0.5),
         ),
-        child: const Text('Select Location'),
+        child: Text(
+            'Select Location${context.read<EventFormProvider>().location.address != "" ? ' - ${context.read<EventFormProvider>().location.address}' : ""}'),
       )),
       'Description (Optional)': TextFormField(
         controller: descriptionTextController,
@@ -145,9 +150,9 @@ class _EventFormState extends State<EventForm> {
               endTime: endTime,
               name: nameTextController.text,
               description: descriptionTextController.text,
-              long: 0,
-              lat: 0,
-              address: 'Address, CA',
+              long: context.read<EventFormProvider>().location.longitude,
+              lat: context.read<EventFormProvider>().location.latitude,
+              address: context.read<EventFormProvider>().location.address,
             ));
 
             Navigator.of(context).pop();
@@ -263,12 +268,13 @@ class LocationPickerPage extends StatefulWidget {
 }
 
 class _LocationPickerPageState extends State<LocationPickerPage> {
-  late List<String> potentialPlaces;
+  late List<Location> potentialPlaces;
   final addressTextController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    potentialPlaces = [];
   }
 
   @override
@@ -280,7 +286,7 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Events Page'),
+          title: const Text('Location Picker'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -288,15 +294,43 @@ class _LocationPickerPageState extends State<LocationPickerPage> {
             children: [
               Form(
                 child: TextFormField(
-                  onChanged: (String text) async {},
+                  onChanged: (String text) async {
+                    DateTime lastTimeEdited = context
+                        .read<EventFormProvider>()
+                        .lastTimeEditedLocation;
+
+                    if (DateTime.now().difference(lastTimeEdited).inSeconds >=
+                        2) {
+                      List<Location> newPotentialPlaces =
+                          await autoCompleteAddress(
+                              37.3496418, -121.9411762, text);
+
+                      setState(() {
+                        potentialPlaces = newPotentialPlaces;
+                      });
+
+                      if (!mounted) return;
+                      context
+                          .read<EventFormProvider>()
+                          .setLastTimeEditedLocation(DateTime.now());
+                    }
+                  },
                 ),
               ),
-              ListView.builder(
-                itemBuilder: (context, index) => ListTile(
-                  title: Text(potentialPlaces[index]),
-                  onTap: () {},
+              Expanded(
+                child: ListView.builder(
+                  itemCount: potentialPlaces.length,
+                  itemBuilder: (context, index) => ListTile(
+                      title: Text(potentialPlaces[index].address),
+                      onTap: () {
+                        context
+                            .read<EventFormProvider>()
+                            .setLocation(potentialPlaces[index]);
+
+                        Navigator.of(context).pop();
+                      }),
                 ),
-              )
+              ),
             ],
           ),
         ));
