@@ -99,8 +99,14 @@ class EventManager:
         return result
     
     
-    def address_autocomplete(self, address: str) -> list:
-        payload = {'input': address, 'key': self.key, 'radius': 50000}
+    def address_autocomplete(self, lat: str, long: str, address: str) -> list:
+        payload = {'input': address, 
+                   'key': self.key, 
+                   'radius': 50000, 
+                   "location": "37.3496,-121.9390", 
+                   "components": "country:us"
+                }
+        
         response = requests.get(url=self.url_auto_complete, params=payload)
         predictions = response.json()["predictions"]
         
@@ -115,4 +121,3 @@ class EventManager:
             results.append({"location": ids[i][1], "cords": locations[i]["cords"]})
             
         return results
-

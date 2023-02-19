@@ -22,8 +22,10 @@ def populate():
 
 @app.route("/completeaddress")
 def complete_address():
+    lat = request.args.get('lat', default = 0, type = float)
+    long =  request.args.get('long', default = 0, type = float)
     address = request.args.get("address", default="", type=str)
-    return jsonify(driver.address_autocomplete(address=address))
+    return jsonify(driver.address_autocomplete(lat=str(lat), long=str(long), address=address))
 
 
 if __name__ == "__main__":
