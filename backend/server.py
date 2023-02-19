@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 key = os.environ.get("GOOGLE_TOKEN")
 print(key)
-google_endpoint = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+endpoint_nearby_search = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
 
 
 all_books = []
@@ -28,10 +28,8 @@ def populate():
         "location": f"{lat},{long}",
         
     }
-    response = requests.get(url=google_endpoint, params=payload)
-    print(response.status_code)
-    print(response.json())
-    return response.json()
+    nearby_spots_response = requests.get(url=endpoint_nearby_search, params=payload)
+    return nearby_spots_response.json()
 
 
 
