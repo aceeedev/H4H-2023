@@ -8,7 +8,11 @@ import heapq
 load_dotenv()
 key = os.environ.get("GOOGLE_TOKEN")
 print(key)
+
 url_nearby_search = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+url_details = "https://maps.googleapis.com/maps/api/place/details/json"
+
+
 app = Flask(__name__)
 
 all_books = []
@@ -30,6 +34,42 @@ def populate():
     # return jsonify({"ids": ids})
     # make calls here
 
+    driver = EventManager()
+
+    result = []
+
+    for id in ids:
+        payload = {
+            "key": key,
+            "fields": "name,current_opening_hours,geometry,address_components",
+            "place_id": id,   
+        }
+
+        response = requests.get(url=url_details, params=payload)    
+
+        data = response.json()["result"]
+
+        if "current_opening_hours" in data:
+            time = data["current_opening_hours"]["weekday_text"][0]
+            print(time)
+
+        else:
+            time = "unknown"
+
+        name = data["name"]
+
+        location = driver.find_address(data["address_components"])
+
+        if "geometry" in data:
+            lat_long = data["geometry"]["location"]
+            coords = [ lat_long["lat"], lat_long["lng"] ]
+            
+
+        result.append(driver.create_event(time=time, name=name, cords=coords, location=location))
+    
+    return jsonify(result)
+
+
 def find_ids(lat, long, keyword) -> list[str]:
     payload = {
         "key": key,
@@ -48,19 +88,6 @@ def find_ids(lat, long, keyword) -> list[str]:
     n = 3 if len(results) > 3 else len(results)
     ids = heapq.nlargest(n, results)
     return [id[1] for id in ids]
-
-    
-
-
-@app.route("/find_event")
-def add():
-    payload = jsonify({
-        "time": "7:30",
-        "name": "soup kitchen",
-        "location": "500 El Camino Real"
-    })
-    return payload
-    
 
 
 if __name__ == "__main__":
