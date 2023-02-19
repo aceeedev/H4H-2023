@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:h4h/pages/mainmap_page.dart';
+import 'package:h4h/pages/openstreetmap_page.dart';
+import 'package:h4h/pages/events_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,10 +29,13 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           TextButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder:
-                      (context) => /*Add page here, ex: const MapPage()*/ const MapSample())),
-              child: const Text('Leo\'s map'))
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const MapSample())),
+              child: const Text('Leo\'s map')),
+          TextButton(
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const EventsPage())),
+              child: const Text('Events page')),
         ],
       ),
     );
