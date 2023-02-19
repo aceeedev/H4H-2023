@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>go to home/find_event to find a qrcode for an event</h1>"
+    return "<h1>go to /findevents to find a qrcode for an event</h1>"
 
 @app.route('/findevents')
 def populate():
