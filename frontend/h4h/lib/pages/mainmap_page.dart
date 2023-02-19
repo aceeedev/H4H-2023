@@ -11,17 +11,27 @@ class MapSample extends StatefulWidget {
 }
 
 class MapSampleState extends State<MapSample> {
+  Set<Marker> events = {};
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    events.add(
+      const Marker(
+        markerId: MarkerId("1"), 
+        position: LatLng(37.3542894, -121.9359333)));
+  }
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
   static const CameraPosition _initial = CameraPosition(
-    target: LatLng(37.3496418,-121.9447969),
+    target: LatLng(37.3496418, -121.9447969),
     zoom: 14.4746,
   );
 
   static const CameraPosition _university = CameraPosition(
       bearing: 192.8334901395799,
-      target: LatLng(37.3496418,-121.9447969),
+      target: LatLng(37.3496418, -121.9447969),
       zoom: 14.4746);
 
   @override
@@ -33,6 +43,7 @@ class MapSampleState extends State<MapSample> {
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
         },
+        markers: events,
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,
