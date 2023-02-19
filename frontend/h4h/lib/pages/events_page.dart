@@ -3,6 +3,7 @@ import 'package:h4h/backend/database.dart';
 import 'package:h4h/pages/event_form_page.dart';
 import 'package:h4h/widgets/event_card.dart';
 import 'package:h4h/models/event.dart';
+import 'map_page.dart';
 
 class EventsPage extends StatefulWidget {
   const EventsPage({super.key});
@@ -14,6 +15,8 @@ class EventsPage extends StatefulWidget {
 class _EventsPageState extends State<EventsPage> {
   late List<Event> events;
 
+  int _selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +25,33 @@ class _EventsPageState extends State<EventsPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    if (index == 0) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const MapPage(),
+        ),
+      );
+    }
+    // if (index == 1) {
+    //   Navigator.of(context).push(
+    //     MaterialPageRoute(
+    //       builder: (context) => const EventsPage(),
+    //     ),
+    //   );
+    // }
+    if (index == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const EventFormPage(),
+        ),
+      );
+    }
   }
 
   @override
@@ -57,6 +87,20 @@ class _EventsPageState extends State<EventsPage> {
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const EventFormPage()),
           ),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Events'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.addchart), label: 'Contribute'),
+            BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Fetch')
+          ],
+          backgroundColor: Colors.amber,
+          selectedItemColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _selectedIndex,
+          onTap: _onNavBarTap,
         ));
   }
 }

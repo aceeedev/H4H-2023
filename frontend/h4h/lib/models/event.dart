@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'dart:convert';
 
 part 'event.g.dart';
 
@@ -28,6 +29,15 @@ class Event {
     required this.long,
     required this.lat,
   });
+
+  String toJsonString() => json.encode({
+        'startTime': startTime.toString(),
+        'endTime': endTime.toString(),
+        'name': name,
+        'description': description,
+        'long': long,
+        'lat': lat,
+      });
 
   factory Event.fromJson(Map<String, dynamic> json) {
     return Event(

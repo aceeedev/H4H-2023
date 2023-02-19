@@ -73,6 +73,6 @@ dependencies {
 // added by leo for google maps
 android {
     defaultConfig {
-        minSdkVersion 20
+        minSdkVersion 21
     }
 }

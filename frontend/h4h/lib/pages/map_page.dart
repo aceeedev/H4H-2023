@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
 import 'events_page.dart';
+import 'event_form_page.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -48,9 +49,23 @@ class MapPageState extends State<MapPage> {
       _selectedIndex = index;
     });
     if (index == 0) {
+      // Navigator.of(context).push(
+      //   MaterialPageRoute(
+      //     builder: (context) => const MapPage(),
+      //   ),
+      // );
+    }
+    if (index == 1) {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => const EventsPage(),
+        ),
+      );
+    }
+    if (index == 2) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => const EventFormPage(),
         ),
       );
     }
@@ -92,12 +107,10 @@ class MapPageState extends State<MapPage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Events'),
           BottomNavigationBarItem(
               icon: Icon(Icons.addchart), label: 'Contribute'),
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.offline_share), label: 'Share'),
           BottomNavigationBarItem(icon: Icon(Icons.qr_code), label: 'Fetch')
         ],
         backgroundColor: Colors.amber,
@@ -105,7 +118,6 @@ class MapPageState extends State<MapPage> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onNavBarTap,
-        // onTap: Null
       ),
       //   floatingActionButton: FloatingActionButton.extended(
       //     onPressed: _goToTheLake,
