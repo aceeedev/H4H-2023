@@ -1,10 +1,18 @@
-/*
+/* 
+what a shame this does not work
+
 import 'package:flutter/material.dart';
-import 'package:flutter_map/';
 import 'package:h4h/backend/database.dart';
 import 'dart:async';
 import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
+// Suitable for most situations
+import 'package:flutter_map/flutter_map.dart';
+// Only import if required functionality is not exposed by default
+import 'package:flutter_map/plugin_api.dart';
+import 'package:latlong2/latlong.dart';
+
+
 
 class MapSample extends StatefulWidget {
   const MapSample({Key? key}) : super(key: key);
@@ -15,7 +23,7 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   // a list of events to plot
-  Set<Marker> events = {};
+  // Set<Marker> events = {};
 
   // event data we get from the api
   late List<Event> event_data;
@@ -28,59 +36,46 @@ class MapSampleState extends State<MapSample> {
     super.initState();
 
     rootBundle
-        .loadString('frontend/h4h/lib/assets/map_styles2.txt')
+        .loadString('assets/map_styles2.txt')
         .then((string) {
       mapStyle = string;
     });
   }
 
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-
-  static const CameraPosition _initial = CameraPosition(
-    target: LatLng(37.3496418, -121.9447969),
-    zoom: 14.4746,
-  );
-
-  static const CameraPosition _university = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.3496418, -121.9447969),
-      zoom: 14.4746);
-
   @override
   Widget build(BuildContext context) {
     // call our api to get a list of events
     // and then add them to events
-    FutureBuilder(
-        future: DB.instance.getAllEvents(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasError) {
-              return Center(
-                  child: Text('An error has occurred, ${snapshot.error}'));
-            } else if (snapshot.hasData) {
-              event_data = snapshot.data!;
-              if (event_data.isEmpty) return const Text('No events');
-
-              events.add(const Marker(
-                  markerId: MarkerId("1"),
-                  position: LatLng(37.3542894, -121.9359333)));
-            }
-          }
-          return const Center(child: CircularProgressIndicator());
-        });
-
     // build the map after getting data from events
     return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _initial,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-          controller.setMapStyle();
+      body: FlutterMap(
+    options: MapOptions(
+      center: LatLng(51.5, -0.09),
+      zoom: 13.0,
+    ),
+    nonRotatedChildren: [
+        // This does NOT fulfill Mapbox's requirements for attribution
+        // See https://docs.mapbox.com/help/getting-started/attribution/
+        AttributionWidget.defaultWidget(
+            source: '© Mapbox © OpenStreetMap',
+            onSourceTapped: () async {
+                // Requires 'url_launcher'
+                if (!await launchUrl(Uri.parse("https://docs.mapbox.com/help/getting-started/attribution/"))) {
+                    if (kDebugMode) print('Could not launch URL');
+                }
+            },
+        )
+    ],
+    children: [
+      TileLayer(
+        urlTemplate: "https://api.mapbox.com/styles/v1/<user>/<tile-set-id>/tiles/<256/512>/{z}/{x}/{y}@2x?access_token={access_token}",
+        additionalOptions: {
+            "access_token": "<ACCESS-TOKEN>",
         },
-        markers: events,
+        userAgentPackageName: 'com.example.app',
       ),
+    ],
+);,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,
         label: const Text('To the lake!'),

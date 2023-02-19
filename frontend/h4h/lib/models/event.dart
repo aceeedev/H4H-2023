@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 part 'event.g.dart';
@@ -8,21 +7,24 @@ class Event {
   @HiveField(0)
   int? id;
   @HiveField(1)
-  DateTime time;
+  DateTime startTime;
   @HiveField(2)
-  String name;
+  DateTime endTime;
   @HiveField(3)
-  String? description;
+  String name;
   @HiveField(4)
-  int iconCodePoint;
+  String? description;
   @HiveField(5)
-  double long;
+  int iconCodePoint;
   @HiveField(6)
+  double long;
+  @HiveField(7)
   double lat;
 
   Event({
     this.id,
-    required this.time,
+    required this.startTime,
+    required this.endTime,
     required this.name,
     this.description,
     required this.iconCodePoint,
