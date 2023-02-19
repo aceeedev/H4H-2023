@@ -58,7 +58,7 @@ class _EventsPageState extends State<EventsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Events Page'),
+          // title: const Text('Events Page'),
         ),
         body: FutureBuilder(
             future: DB.instance.getAllEvents(),

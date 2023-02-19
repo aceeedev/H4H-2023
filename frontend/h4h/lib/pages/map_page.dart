@@ -8,6 +8,7 @@ import 'package:h4h/models/event.dart';
 import 'package:flutter/services.dart';
 import 'events_page.dart';
 import 'event_form_page.dart';
+import 'package:image/image.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({Key? key}) : super(key: key);
@@ -106,9 +107,18 @@ class MapPageState extends State<MapPage> {
               event_data = snapshot.data!;
               if (event_data.isEmpty) return const Text('No events');
 
+              for (int index = 0; index <= event_data.length; index++) {
+                events.add(Marker(
+                  markerId: MarkerId(index.toString()),
+                  position:
+                      LatLng(event_data[index].lat, event_data[index].long),
+                ));
+              }
+
               events.add(const Marker(
                   markerId: MarkerId("1"),
                   position: LatLng(37.783333, -122.416667)));
+              // icon: BitmapDescriptor.fromAssetImage(configuration, assetName)
             }
           }
           return const Center(child: CircularProgressIndicator());
