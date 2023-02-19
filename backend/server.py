@@ -3,6 +3,7 @@ from event import EventManager
 import requests
 import os
 from dotenv import load_dotenv
+import heapq
 
 load_dotenv()
 key = os.environ.get("GOOGLE_TOKEN")
@@ -24,6 +25,9 @@ def populate():
     keyword = request.args.get("query", default="", type=str)
     
     ids = find_ids(lat=lat, long=long, keyword=keyword)
+    # make calls for ids here (you should expect 3 or less perhaps zero make sure you check)
+    
+    # return jsonify({"ids": ids})
     # make calls here
 
 def find_ids(lat, long, keyword) -> list[str]:
@@ -35,10 +39,17 @@ def find_ids(lat, long, keyword) -> list[str]:
         
     }
     response = requests.get(url=url_nearby_search, params=payload)
-    ids = []
+    # return response.json()
+    results = []
     for result in response.json()["results"]:
-        if "place_id" in result: ids.append(result["place_id"])
-    return ids
+        if "rating" in result and "user_ratings_total" in result:
+            results.append((result["rating"] * result["user_ratings_total"], result["place_id"]))
+    
+    n = 3 if len(results) > 3 else len(results)
+    ids = heapq.nlargest(n, results)
+    return [id[1] for id in ids]
+
+    
 
 
 @app.route("/find_event")
