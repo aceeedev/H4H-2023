@@ -43,7 +43,7 @@ class MapPageState extends State<MapPage> {
       Completer<GoogleMapController>();
 
   final CameraPosition _initial = CameraPosition(
-    target: LatLng(coords.scuLat, coords.scuLong),
+    target: LatLng(coords.berkLat, coords.berkLong),
     zoom: 14.4746,
   );
 
@@ -99,8 +99,8 @@ class MapPageState extends State<MapPage> {
   ///   genericMarker: BitmapDescriptor
   Future<Map<String, dynamic>> getFutures() async {
     Map<String, dynamic> futures = {};
-    double lat = coords.scuLat;
-    double long = coords.scuLong;
+    double lat = coords.berkLat;
+    double long = coords.berkLong;
 
     futures['allEvents'] = await DB.instance.getAllEvents();
     futures['foodEvents'] = await findEvents(lat, long, 'soup kitchens');
