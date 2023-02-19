@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:h4h/backend/flask_interface.dart';
@@ -41,8 +42,8 @@ class MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  static const CameraPosition _initial = CameraPosition(
-    target: LatLng(37.783333, -122.416667),
+  final CameraPosition _initial = CameraPosition(
+    target: LatLng(coords.scuLat, coords.scuLong),
     zoom: 14.4746,
   );
 
@@ -88,9 +89,6 @@ class MapPageState extends State<MapPage> {
         lat: eventJson['lat'],
         address: eventJson['address'],
       ));
-
-      print('\n\n\n');
-      print((await DB.instance.getAllEvents()).length);
     }
   }
 
@@ -106,12 +104,37 @@ class MapPageState extends State<MapPage> {
 
     futures['allEvents'] = await DB.instance.getAllEvents();
     futures['foodEvents'] = await findEvents(lat, long, 'soup kitchens');
-    futures['jobEvents'] = await findEvents(lat, long, '');
-    futures['genericMarker'] = await BitmapDescriptor.fromAssetImage(
-        const ImageConfiguration(devicePixelRatio: 3.2),
-        'frontend/h4h/assets/icons/frame_person_FILL0_wght400_GRAD0_opsz48.png');
+    futures['jobEvents'] = await findEvents(lat, long, 'help needed jobs');
+    futures['genericMarker'] = await iconDataToBitmap(Icons.person);
+    futures['foodMarker'] = await iconDataToBitmap(Icons.food_bank_rounded);
+    futures['jobMarker'] = await iconDataToBitmap(Icons.work_rounded);
 
     return futures;
+  }
+
+  Future<BitmapDescriptor> iconDataToBitmap(IconData iconData) async {
+    final pictureRecorder = PictureRecorder();
+    final canvas = Canvas(pictureRecorder);
+
+    final textPainter = TextPainter(textDirection: TextDirection.ltr);
+    final iconStr = String.fromCharCode(iconData.codePoint);
+
+    textPainter.text = TextSpan(
+        text: iconStr,
+        style: TextStyle(
+          letterSpacing: 0.0,
+          fontSize: 96.0,
+          fontFamily: iconData.fontFamily,
+          color: Colors.red,
+        ));
+    textPainter.layout();
+    textPainter.paint(canvas, const Offset(0.0, 0.0));
+
+    final picture = pictureRecorder.endRecording();
+    final image = await picture.toImage(96, 96);
+    final bytes = await image.toByteData(format: ImageByteFormat.png);
+
+    return BitmapDescriptor.fromBytes(bytes!.buffer.asUint8List());
   }
 
   @override
@@ -128,20 +151,29 @@ class MapPageState extends State<MapPage> {
             } else if (snapshot.hasData) {
               Map<String, dynamic> futureData = snapshot.data!;
 
+              if (futureData.isEmpty) return const Text('No events');
+
               List<Event> allEvents = futureData['allEvents'];
               List<Event> foodEvents = futureData['foodEvents'];
               List<Event> jobEvents = futureData['jobEvents'];
               BitmapDescriptor genericMarker = futureData['genericMarker'];
+              BitmapDescriptor foodMarker = futureData['foodMarker'];
+              BitmapDescriptor jobMarker = futureData['jobMarker'];
 
-              if (futureData.isEmpty) return const Text('No events');
+              List<List<dynamic>> allEventTypes = [
+                [allEvents, genericMarker],
+                [foodEvents, foodMarker],
+                [jobEvents, jobMarker]
+              ];
 
-              for (int index = 0; index < allEvents.length; index++) {
-                print('${allEvents[index].lat} ${allEvents[index].long}');
-                events.add(Marker(
-                    markerId: MarkerId(index.toString()),
-                    position:
-                        LatLng(allEvents[index].lat, allEvents[index].long),
-                    icon: genericMarker));
+              for (List<dynamic> eventType in allEventTypes) {
+                for (int index = 0; index < eventType[0].length; index++) {
+                  events.add(Marker(
+                      markerId: MarkerId(index.toString()),
+                      position: LatLng(
+                          eventType[0][index].lat, eventType[0][index].long),
+                      icon: eventType[1]));
+                }
               }
 
               events.add(const Marker(

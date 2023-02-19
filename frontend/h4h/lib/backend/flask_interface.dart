@@ -9,10 +9,11 @@ String apiUrl = 'https://hands4hope.pythonanywhere.com';
 Future<List<Event>> findEvents(double lat, double long, String query) async {
   String endpoint = '/findevents';
   var response = await http.Client()
-      .get(Uri.parse('$apiUrl$endpoint?lat=$lat&long=$long%query=$query'));
+      .get(Uri.parse('$apiUrl$endpoint?lat=$lat&long=$long&query=$query'));
 
   if (response.statusCode == 200) {
-    List<dynamic> json = jsonDecode(response.body);
+    List<Map<String, dynamic>> json =
+        jsonDecode(response.body) as List<Map<String, dynamic>>;
     List<Event> foundEvents = [];
 
     for (Map<String, dynamic> event in json) {

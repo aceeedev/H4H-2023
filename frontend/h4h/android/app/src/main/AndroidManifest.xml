@@ -37,4 +37,5 @@
     <!-- We may have to add meta-data here as well for googe maps key
     —Leo
     -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 </manifest>
